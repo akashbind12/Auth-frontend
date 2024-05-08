@@ -15,14 +15,16 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { signupAPI } from '../redux/auth/api';
 import { toast } from 'react-toastify';
+import { signup } from '../redux/auth/action';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const dispatch = useDispatch();
   const [userDetails, setUserDetails] = useState({
     "fullName": "",
     "userName": "",
@@ -30,6 +32,8 @@ const Signup = () => {
     "mobile": "",
     "password": "",
   })
+
+  const authState = useSelector(state => state.auth);
 
   const handleChange = (e) => {
     setUserDetails({
@@ -74,20 +78,7 @@ const Signup = () => {
       return;
     }
     //signup 
-    try {
-      await signupAPI(userDetails);
-      toast.success("Registration successful", {
-        position: "top-center",
-        autoClose: 1000,
-      });
-      navigate("/login");
-    } catch (error) {
-      // console.log("err:",error)
-      toast.error(error, {
-        position: "top-center",
-        autoClose: 1000,
-      });
-    }
+    dispatch(signup(userDetails,navigate))
   }
 
 
@@ -100,7 +91,7 @@ const Signup = () => {
     const re = /^\d{10}$/;
     return re.test(mobile);
   }
-
+  
   return (
     <Flex
       minH={'100vh'}
@@ -171,6 +162,7 @@ const Signup = () => {
             <Stack spacing={10} pt={2}>
               <Button
                 loadingText="Submitting"
+                isLoading={authState.signupLoading}
                 size="lg"
                 bg={'blue.400'}
                 color={'white'}

@@ -16,7 +16,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { login } from '../redux/auth/action';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,22 +28,21 @@ const Login = () => {
   const [password, setPassword] = useState("")
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const authState = useSelector(state => state.auth);
+  const authState = useSelector(state => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(email==="" || password===""){
-      // alert('fields can not be empty')
+    if (email === "" || password === "") {
       toast.error('fields can not be empty', {
         position: "top-center",
       });
-      return 
+      return
     }
-    let formData = { 
-      "email": email, 
-      "password": password 
+    let formData = {
+      "email": email,
+      "password": password
     }
-    dispatch(login(formData,navigate))
+    dispatch(login(formData, navigate))
   }
 
   return (
@@ -93,6 +92,8 @@ const Login = () => {
                 <Link to="/signup">Forgot password?</Link>
               </Stack>
               <Button
+                loadingText="Submitting"
+                isLoading={authState.isLoginLoading}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
