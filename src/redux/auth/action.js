@@ -13,6 +13,8 @@ export const login = (formData,navigate) => async (dispatch) => {
       position: "top-center",
       autoClose: 1000,
     });
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('user', JSON.stringify(data.user));
     navigate('/');
   } catch (error) {
     dispatch({ type: AUTH_ERROR, payload: error });

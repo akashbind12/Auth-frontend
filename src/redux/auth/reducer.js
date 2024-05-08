@@ -1,11 +1,12 @@
 // auth/reducer.js
 import { LOGIN_SUCCESS, LOGOUT, AUTH_ERROR } from './types';
+let token = localStorage.getItem('accessToken')
+let user = localStorage.getItem('user')
 
 const initialState = {
-  isAuthenticated: false,
-  user: null,
-  accessToken: null,
-  refreshToken: null,
+  isAuthenticated: token ? true : false,
+  user: user ? JSON.parse(user): null,
+  accessToken: token || null,
   error: null
 };
 
@@ -17,7 +18,6 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: true,
         user: action.payload.user,
         accessToken: action.payload.accessToken,
-        refreshToken: action.payload.refreshToken,
         error: null
       };
     case LOGOUT:
@@ -26,7 +26,6 @@ const authReducer = (state = initialState, action) => {
         isAuthenticated: false,
         user: null,
         accessToken: null,
-        refreshToken: null,
         error: null
       };
     case AUTH_ERROR:

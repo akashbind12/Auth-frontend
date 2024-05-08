@@ -26,7 +26,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  console.log(email, password)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // const authState = useSelector(state => state.auth);
