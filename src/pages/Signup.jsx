@@ -18,7 +18,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signupAPI } from '../redux/auth/api';
 import { toast } from 'react-toastify';
 
-const Signup = ()  => {
+const Signup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -41,36 +41,64 @@ const Signup = ()  => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     //check password match
-    if(userDetails.password!==confirmPassword){
+    if (userDetails.password !== confirmPassword) {
       toast.error('Passwords do not match', {
         position: "top-center",
         autoClose: 1000,
       });
       return
     }
-    //empty field validation
-    if(userDetails.fullName==="" || userDetails.userName==="" || userDetails.email==="" || userDetails.mobile==="" || userDetails.password===""){
-      toast.error('fields can not be empty', {
+    // Check if any field is empty
+    if (Object.values(userDetails).some(value => value === "")) {
+      toast.error('Fields cannot be empty', {
         position: "top-center",
         autoClose: 1000,
       });
-      return
+      return;
+    }
+
+    // Check email and mobile format
+    if (!isValidEmail(userDetails.email)) {
+      toast.error('Invalid email address', {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return;
+    }
+
+    if (!isValidMobile(userDetails.mobile)) {
+      toast.error('Invalid mobile number', {
+        position: "top-center",
+        autoClose: 1000,
+      });
+      return;
     }
     //signup 
-    try{
+    try {
       await signupAPI(userDetails);
       toast.success("Registration successful", {
         position: "top-center",
         autoClose: 1000,
       });
       navigate("/login");
-    }catch(error){
+    } catch (error) {
       // console.log("err:",error)
       toast.error(error, {
         position: "top-center",
         autoClose: 1000,
       });
     }
+  }
+
+
+  const isValidEmail = (email) => {
+    const re = /^\S+@\S+\.\S+$/;
+    return re.test(email);
+  }
+
+  const isValidMobile = (mobile) => {
+    const re = /^\d{10}$/;
+    return re.test(mobile);
   }
 
   return (
@@ -128,12 +156,12 @@ const Signup = ()  => {
             <FormControl id="confirm_password" isRequired>
               <FormLabel>Confirm password</FormLabel>
               <InputGroup>
-                <Input type={showConfirmPassword ? 'text' : 'password'} onChange={(e) => setConfirmPassword(e.target.value)}  />
+                <Input type={showConfirmPassword ? 'text' : 'password'} onChange={(e) => setConfirmPassword(e.target.value)} />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
                     onClick={() =>
-                      setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword) 
+                      setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword)
                     }>
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
